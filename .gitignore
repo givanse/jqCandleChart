@@ -2,3 +2,5 @@
 .DS_Storemaster
 .project
 .gitignore
+js/jquery-2.0.2.js
+js/jquery.csv-0.71.js
