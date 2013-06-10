@@ -12,3 +12,11 @@
    (Value is not an internal calculation, and drawing possible. 
     Also the value of the moving average non-ready as soon as)
 
+Dependencies:
+  - JQuery
+    js/jquery.js is a symbolic link that must point to your library
+    jquery.com
+  - JQuery-CSV 
+    js/jquery.csv.js is a symbolic link that must point to your library
+    code.google.com/p/jquery-csv
+
