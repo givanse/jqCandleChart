@@ -1,19 +1,14 @@
-- jQuery plugin : Candlestick Chart v0.1.3 -
-	Javascriptと<canvas>でローソク足を表示します。
+- jQuery plugin : Candlestick Chart
 	
-	機能
+  Candlesticks 
 	======
-	・ローソク足の表示
-	　・パラメータによる各部のカラー変更
-	　・表やローソクのサイズ変更
-	　・横罫線本数の変更
-	　・表上の上限、下限の設定
-	　・上限、下限の自動計算モード
-	・出来高の表示
-	・移動平均線の表示
-	　（値は内部計算ではないので、準備次第で移動平均以外の値でも描画可能。）
+   Color change of each part by parameters
+   Resizing of tables and Candle
+   And modification of horizontal line number
+   Upper limit on the table, setting the lower limit
+   Automatic calculation mode limit, the lower limit
+   And display of the volume
+   And display of the moving average line
+   (Value is not an internal calculation, and drawing possible. 
+    Also the value of the moving average non-ready as soon as)
 
-	Author: shunsuke Ito: shunsuke.ito@gmail.com
-	github: http://github.com/shunito/jqCandleChart/
-
-	Released under the MIT and GPL licenses.
