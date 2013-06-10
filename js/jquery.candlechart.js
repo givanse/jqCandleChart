@@ -1,9 +1,6 @@
-/*
- * jQuery plugin : Candlestick Chart v0.1.3
- * http://github.com/shunito/jqCandleChart
+/**
+ * jQuery plugin : Candlestick Chart
  *
- * Copyright 2010 Shunsuke Ito
- * Released under the MIT and GPL licenses.
  */
 
 (function(jQuery) {
@@ -18,7 +15,7 @@
   var shinOffsetX;
   var barWidth;
 
-  // 線をシャープに（なんかもっとうまい手はないかなぁ。）
+  //I wonder if there is no more good hand something (lines sharply 
   var _ajustXY = function( p ) {
     if( p%2 === 0 ) { return ( p - 0.5 ); }
     return p;
@@ -34,10 +31,10 @@
       !(value.propertyIsEnumerable('length'));  
   };
 
-  // オプション設定
+  // option settings 
   var _setOption = function(options) {
+    // default options
     st = $.extend({
-      //optionの初期値を設定
       'width' : 400,
       'height' : 300,
       'ofX': 50,
@@ -56,11 +53,11 @@
       'autoScale' : false
       }, options);
 
-    // 座標スケールの変換準備（縦表示領域とスケールの比を求める）
+    // (I ask the ratio of scale and vertical display area) conversion preparation of coordinate scale
     chHeight = st.height - st.ofY*2;
     param = chHeight / (st.upper  - st.lower);
 
-    // ローソクの幅から芯や出来高の幅、間隔を計算
+    // Calculate width, the distance between the volume and width of the core from Candle 
     shinWidth = Math.floor(st.cdWidth /3);
     cdStage = st.cdWidth*2;
     cdOffsetX = st.ofX + cdStage;
@@ -96,19 +93,19 @@
     }
   };
 
-  // <canvas>の初期化
-  var _init = function (canvas) {
+  // Initialize <canvas>
+  var _initCanvas = function (canvas) {
     var ctx = canvas.getContext('2d');
     jQuery(canvas).css("width", st.width + "px");
     jQuery(canvas).css("height", st.height + "px");
     jQuery(canvas).attr("width", st.width);
     jQuery(canvas).attr("height", st.height);
 
-    // 背景塗りつぶし
+    // Background fill 
     ctx.fillStyle = st.bgColor;
     ctx.fillRect(0, 0, st.width, st.height);
 
-    // 基本枠線
+    // Basic border 
     ctx.strokeStyle = st.cdLineColor;
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -116,17 +113,14 @@
     ctx.lineTo( _ajustXY(st.ofX), _ajustXY( st.height - st.ofY) );
     ctx.lineTo( _ajustXY(st.width - st.ofX), _ajustXY(st.height - st.ofY));
     ctx.stroke();
-
   };
 
-  // 縦罫線
+  // vertical borders 
   var _writeTimeScale = function(ctx, label, d) {
-  
     ctx.beginPath();
     ctx.lineWidth = 1;
     ctx.strokeStyle = st.liColor;
-    
-    // 破線（4px）
+    // dashed line（4px）
     var x = _ajustXY(d * cdStage + shinOffsetX);
     var y = st.height - st.ofY-1;
     while( y > st.ofY ) {
@@ -136,60 +130,61 @@
       ctx.stroke();
       y = y-8;
     }
-
-    // 罫線部分の値
+    // rules value part 
     ctx.beginPath();
     ctx.strokeStyle = st.cdLineColor;
     ctx.textBaseline = "top";
     ctx.textAlign = "center";
     ctx.strokeText( label, x , st.height - st.ofY +4 );
-  
   };
 
-  // ローソク一本描く
-  var _writeCandle = function(ctx,o,c,h,l,d) {
-      var opP = (o - st.lower) * param; // 初値
-      var clP = (c - st.lower) * param; // 終値
-      var hiP = (h - st.lower) * param; // 高値
-      var loP = (l - st.lower) * param; // 安値
-
-      // 芯を描画
+  // draw one candle 
+  var _drawSingleCandle = function(ctx,o,c,h,l,d) {
+      var opP = (o - st.lower) * param;
+      var clP = (c - st.lower) * param;
+      var hiP = (h - st.lower) * param;
+      var loP = (l - st.lower) * param;
+      
+      // Drawing the core 
       ctx.lineWidth = shinWidth;
       ctx.beginPath();
       ctx.strokeStyle = st.cdLineColor;
-      ctx.moveTo( _ajustXY(d * cdStage + shinOffsetX) , _ajustXY(chHeight - hiP + st.ofY ));
-      ctx.lineTo( _ajustXY(d * cdStage + shinOffsetX) , _ajustXY(chHeight - loP + st.ofY ));
+      ctx.moveTo(_ajustXY(d * cdStage + shinOffsetX), 
+                 _ajustXY(chHeight - hiP + st.ofY ));
+      ctx.lineTo(_ajustXY(d * cdStage + shinOffsetX), 
+                 _ajustXY(chHeight - loP + st.ofY ));
       ctx.stroke();
       ctx.lineWidth = 1;
-
-      // 終値が初値より高ければ白、安ければ黒で塗りつぶし
+      // Fill in black white, if cheaper closing price is higher than the opening price
       if( opP < clP ) { ctx.fillStyle = st.cdUpColor; }
-      else { ctx.fillStyle = st.cdDownColor; }
+      else
+        ctx.fillStyle = st.cdDownColor;
       ctx.strokeStyle = st.cdLineColor;
-      ctx.fillRect( _ajustXY(d * cdStage + cdOffsetX), _ajustXY(chHeight-opP + st.ofY) , st.cdWidth, opP-clP );
-      ctx.strokeRect( _ajustXY(d * cdStage + cdOffsetX), _ajustXY(chHeight-opP + st.ofY) , st.cdWidth, opP-clP );
+      ctx.fillRect( _ajustXY(d * cdStage + cdOffsetX), 
+                    _ajustXY(chHeight-opP + st.ofY) , st.cdWidth, opP-clP );
+      ctx.strokeRect( _ajustXY(d * cdStage + cdOffsetX), 
+                      _ajustXY(chHeight-opP + st.ofY) , st.cdWidth, opP-clP );
   };
 
-  // ローソク足の描画
-  var _writeCandles = function(canvas,data) {
-    if( data.length === 0 ) { return; }
+  // Drawing of candlestick 
+  var _drawCandles = function(canvas, data) {
+    if( data.length === 0 ) return; 
     var ctx = canvas.getContext('2d');
 
-    // 横罫線
     _writeScale(ctx);
 
     var l = data.length;
-    for(var i = 0;i < l; i++){
+    for(var i = 0 ; i < l ; i++) {
       if(data[i]) {
         if(data[i][4]) {
           _writeTimeScale(ctx, data[i][4],i);
         }
-        _writeCandle(ctx,data[i][0],data[i][1],data[i][2],data[i][3],i);
+        _drawSingleCandle(ctx, data[i][0], data[i][1], data[i][2], data[i][3],i);
       }
     }
   };
 
-  // スプライン補間で移動平均線の描画
+  // Drawing of the moving average line in the spline interpolation
   // from: jQuery.crSpline Copyright 2010, M. Ian Graham
   // http://github.com/MmmCurry/jquery.crSpline
   var _writeMovingAvg = function(canvas,data,color) {
@@ -277,75 +272,65 @@
     ctx.stroke();
   };
 
-  // 下限・上限の自動設定
+  // Automatic setting of the lower limit, upper limit
   var _setScale = function(data) {
     var l = data.length;
     var max = Number.MIN_VALUE;
     var min = Number.MAX_VALUE;
-
     for(var i=0; i<l ; i++) {
       max = Math.max(max,data[i][2]);
       min = Math.min(min,data[i][3]);
     }
-
-    // 上限・下限の差の1/5を余裕として上下を調整
+    // Adjust up or down as a margin of 1/5 of the difference between 
+    // the upper and lower limit 
     var s = (max - min) / 5;
     max = Math.floor( (max + s) / 10) * 10;
     min = Math.floor( (min - s) / 10) * 10;
-
-    // パラメータ再設定
+    // Parameter resetting 
     st.upper = max;
     st.lower = min;
     param = chHeight / (st.upper  - st.lower);
   };
 
-  // Initialize Candlestick Chart
-  // チャートの初期化
-  // public method
-  // Usage: jQuery(elm).candleChart([[tickdata]],{options})
-  jQuery.fn.candleChart = function(data,options) {
-    var elm = this;
-    var o = {};
-    var d = [];
-
-    // 引数がひとつで行列ならデータ、オブジェクトならオプションとみなす
-    if(arguments.length === 1 ) {
-      if(is_array(arguments[0])) { d = arguments[0]; }
-      else { o = arguments[0]; }
-    }
-    else {
-      // そうでなければデータとオブジェクトの順
-      d = data;
-      o = options;
-    }
-
-    // オプションと下限・上限設定
-    _setOption(o);
-    if(st.autoScale && d.length > 1 ) {
-      _setScale(d);
-    }
-
-    //要素を一個ずつ処理
-    elm.each(function() {
-      if(jQuery(this).attr("tagName")==="CANVAS") {
-        _init(this);
-        _writeCandles(this,d);
+  /**
+   * Initialize Candlestick Chart
+   * public method
+   * Usage: jQuery(canvas).candleChart([[tickdata]], {options})
+   */
+  jQuery.fn.candleChart = function(data, options) {
+    if(!jQuery(this).is("canvas"))
+      return;
+    // Is regarded as a data option, if the object argument is a matrix with one
+    if(arguments.length === 1 )
+      if(is_array(arguments[0])) { 
+        data = arguments[0]; 
+        options = {};
+      } else {
+        data = [];
+        options = arguments[0]; 
+      }
+    // Lower limit, upper limit setting and options
+    _setOption(options);
+    if(st.autoScale && data.length > 1 )
+      _setScale(data);
+    // One by one processing element
+    this.each(function() {
+      if(jQuery(this).is("canvas")) {
+        _initCanvas(this);
+        _drawCandles(this, data);
       }
     });
-
     //method chain
     return this;
   };
 
   // write Trading volume
-  // 出来高の表示
   // public method
   // Usage: jQuery(elm).ccVolume([volumedata])
   jQuery.fn.ccVolume = function(data) {
     var elm = this;
     if(!data){ return this; }
-
-    // 出来高のバーを一本表示
+    // A book display a bar of volume
     var _writeVolumeBar = function(ctx, v, d) {
       var v = v || 0;
       ctx.fillStyle = st.voColor;
@@ -354,11 +339,11 @@
             barWidth, _ajustXY(v) *-1 );
     };
 
-    // 出来高の描画
+    // Drawing of volume
     var _writeVolume = function(canvas,data) {
       var ctx = canvas.getContext('2d');
       var max = Math.max.apply(Math, data );
-      var param = 40/ max;      // 40pxが最大の高さ
+      var param = 40 / max;      // 40pxが最大の高さ
       var l = data.length;
       for(var i = 0;i < l; i++){
         _writeVolumeBar(ctx, Math.floor(data[i]* param),i);
@@ -367,7 +352,7 @@
 
     //要素を一個ずつ処理
     elm.each(function() {
-      if(jQuery(this).attr("tagName")==="CANVAS") {
+      if(jQuery(this).is("canvas")) {
         _writeVolume(this,data);
       }
     });
@@ -377,7 +362,7 @@
   };
 
   // write (only) candlestick
-  // ローソク足の描画
+  // Drawing of candlestick 
   // public method
   // Usage: jQuery(elm).ccTick([volumedata])
   jQuery.fn.ccTick = function(data) {
@@ -391,8 +376,8 @@
 
     //要素を一個ずつ処理
     elm.each(function() {
-      if(jQuery(this).attr("tagName")==="CANVAS") {
-        _writeCandles(this,data);
+      if(jQuery(this).is("canvas")) {
+        _drawCandles(this, data);
       }
     });
 
@@ -400,8 +385,7 @@
     return this;
   };
 
-  // write moving average
-  // 移動平均線の表示
+  // Display of the moving average line
   // use jquery crSpline
   //   http://github.com/MmmCurry/jquery.crSpline
   //   fork -> http://github.com/shunito/jquery.crSpline
@@ -413,7 +397,7 @@
 
     //要素を一個ずつ処理
     elm.each(function() {
-      if(jQuery(this).attr("tagName")==="CANVAS") {
+      if(jQuery(this).is("canvas")) {
         _writeMovingAvg(this,data,color);
       }
     });
@@ -431,8 +415,8 @@
 
     //要素を一個ずつ処理
     elm.each(function() {
-      if(jQuery(this).attr("tagName")==="CANVAS") {
-        _init(this);
+      if(jQuery(this).is("canvas")) {
+        _initCanvas(this);
       }
     });
 
@@ -458,3 +442,4 @@
   };
 
 })(jQuery);
+//EOF

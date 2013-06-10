@@ -17,26 +17,25 @@
 <article>
 <h1>jqCandlechart.jsとは</h1>
 <p>jqCandlechart.jsは&lt;canvas&gt;にローソク足チャートを表示するjQueryプラグインです。<br>
-シンプルなメソッドで出来高と移動平均線も表示可能です。<br>
-ライセンスはjQueryプラグイン定番っぽいMIT and GPLとしております。</p>
-<p><a href="demo.html">jqCandlechart.jsデモ</a></p>
-<p>サンプル画像<br><img src="image.jpg" alt="サンプル画像"></p>
+Moving average line and the volume is viewable in the simple methods。<br>
+<p>Demo: <a href="demo.html">jqCandlechart.js</a></p>
+<p>Sample image:<br><img src="image.jpg" alt="Sample image"></p>
 
-<h1>使い方</h1>
-<h2>1) プラグインの読み込みとHTMLの準備</h2>
-<p>ソースを<a href="https://github.com/shunito/jqCandleChart/archives/master">githubのリポジトリ</a>からダウンロードし、その他jQueryのプラグインと同様に読み込んでください。表示にはjquery.candlechart.jsのみ利用します。その他のファイルは説明やテスト用ですので不要です。</p>
+<h1>How to use</h1>
+<h2>1) Preparation of HTML and read the plug-in</h2>
 <p class="code">
 &lt;script src=&quot;jquery.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;<br>
 &lt;script src=&quot;jquery.candlechart.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
 </p>
-<p>また、描画用のcanvasをHTML上に準備します。</p>
+
+<p>In addition, I will prepare to HTML on the canvas for drawing。</p>
 <p class="code">
 &lt;canvas width=&quot;400&quot; height=&quot;300&quot; id=&quot;cv01&quot;&gt;&lt;/canvas&gt;
 </p>
 
-<h2>2) データの準備</h2>
-<p>ローソク足の描画には、始値、終値、高値、安値の4つのデータが必要です。これを２次元配列に準備します。
-この際、配列の5つ目に文字列を設定すると、縦罫線と文字列がラベルとして表示されます。</p>
+<h2>2) Preparation of data</h2>
+<p>The drawing of Candlestick, data of four open, close, high, lows are required. I will prepare a two-dimensional array this
+In this case, if you set a string to a fifth of the array, and string vertical border appears as a label。</p>
 <p class="code">
 var tick = [<br>
 &nbsp;[200,250,260,190],<br>
@@ -44,13 +43,14 @@ var tick = [<br>
 &nbsp;[280,210,280,180]<br>
 ];
 </p>
-<p>同様に出来高と移動平均を配列に準備します。</p>
+
+<p>Prepare an array and moving average trading volume as well。</p>
 <p class="code">
 var vol = [1000,1200,1100];<br>
 var avg = [240,260,270];
 </p>
 
-<h2>3) 描画</h2>
+<h2>3) Drawing</h2>
 <p>正常に読み込まれていれば、jQueryのプラグインとしてメソッドが利用可能となっていますので、以下のようにメソッドにデータを渡すことで、チャートが描画されます。<br>
 メソッドチェーンで出来高や移動平均を追加表示できます。</p>
 <p class="code">
@@ -82,7 +82,7 @@ $("#cv01").candleChart(tick) 　<span>// ローソク足の初期設定と描画
 </tbody>
 </table>
 
-<h2>4) オプション</h2>
+<h2>4) Option</h2>
 <p>チャートの背景色やローソクの太さなど、オプション指定することで多様なチャートを描画可能です。<br>
 オプションは以下のようにオブジェクト形式で複数設定が可能です。</p>
 <p class="code">
@@ -118,25 +118,15 @@ $("#cv01").candleChart(tick,{<br>
 </tbody>
 </table>
 
-<p>チャートの上限・下限を自動計算する場合、横罫線の数値も自動で計算されますので、きりのいい数字ではなくなります。
-複数のチャートで上限・下限を揃えたりすることもあると思いますので、デフォルトでは自動計算しない設定になっています。</p>
+<p>If you want to automatically calculate the upper and lower limit of the chart, the number of horizontal rule will also be automatically calculated, it is no longer a good number of cut。
+Because I think that there also be aligned or the upper and lower limit in more than one chart, and it is set not to automatically calculated by default。</p>
 
-<h1>その他</h1>
-<p>ソースや課題の管理、バグトラッキングにはgithubを利用しています。適当にご利用ください。
-また、バグの報告、環境テスト結果などお気づきの点はtwitterアカウントかメールまでお気軽にどうぞ。<br>
-github: <a href="http://github.com/shunito/jqCandleChart/">http://github.com/shunito/jqCandleChart/</a><br>
-twitter:<a href="http://twitter.com/shunito">@shunito</a><br>
-mail: shunsuke.ito@じーめーるどっとこむ。
-</p>
+  </article>
+  </section>
+  <aside></aside>
+  </div>
 
-</article>
-</section>
-<aside></aside>
-</div>
-
-<footer>
-	<p class="copyright">Copyright &copy; Shunsuke Ito All Rights Reserved.</p>
-</footer>
-</div>
+  <footer></footer>
+  </div>
 </body>
 </html>

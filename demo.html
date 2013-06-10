@@ -2,14 +2,51 @@
 <html lang="ja">
 <head>
 	<meta charset="UTF-8">
-	<title>Demo - jQuery plugin : Candlestick Chart</title>
-	<link href="simple.css" rel="stylesheet" type="text/css" media="screen">
-	<script src="jquery.js" type="text/javascript"></script>
-	<script src="jquery.csv.js" type="text/javascript"></script>
-	<script src="jquery.candlechart.js" type="text/javascript"></script>
+  <title>Demo - jQuery plugin : Candlesticks Chart</title>
+	<link href="css/simple.css" rel="stylesheet" type="text/css" media="screen">
+	<script src="js/jquery.js" type="text/javascript"></script>
+	<script src="js/jquery.csv.js" type="text/javascript"></script>
+	<script src="js/jquery.candlechart.js" type="text/javascript"></script>
+</head>
+
+<body>
+  <div id="page">
+  <header>
+	  <h1 id="siteName">Demo - jQuery plugin : Candlesticks Chart</h1>
+  </header>
+
+  <div id="contents">
+  <section id="main">
+  <article>
+    <p style="text-align:right;font-size:80%;">
+    </p>
+    <p>It reads data up to 2010 the end of September 2007 the Nikkei 225 futures (CSV format), and volume Candlesticks
+       Show me 50 books in a random period moving average line on the 5th。</p>
+    <div class="stage">
+      <canvas width="400" height="300" id="cv01"></canvas>
+    </div>
+
+    <p>※Google Chrome If, because you can not access the file in the local security issues in default
+       It does not work in the local environment  。<br>
+       Chrome To start-up options –allow-file-access-from-files It works by adding a。
+    </p>
+
+    <div class="stage">
+      <canvas width="400" height="300" id="cv02"></canvas>
+    </div>
+
+  </article>
+  </section>
+
+  <aside></aside>
+  </div>
+
+  <footer></footer>
+  </div>
+</body>
+</html>
+
 	<script type="text/javascript">
-    $(function(){
-      
       var option = {
       'width' : 600,
       'height' : 400,
@@ -36,82 +73,61 @@
       'autoScale' : true
       };
 
-      $.get('./n225.csv',function(data){
-        var csv = $.csv()(data);
+  var csvString="'2010/8/9','9510','9570','9500','9560','42271'\n\
+'2010/8/10','9620','9670','9500','9540','67049'\n\
+'2010/8/11','9430','9450','9270','9280','79483'\n\
+'2010/8/12','9120','9210','9050','9190','85514'\n\
+'2010/8/13','9200','9280','9150','9270','56062'\n\
+'2010/8/16','9130','9210','9080','9180','54212'\n\
+'2010/8/17','9080','9190','9070','9170','52021'\n\
+'2010/8/18','9250','9280','9140','9240','69844'\n\
+'2010/8/19','9230','9380','9230','9360','70034'\n\
+'2010/8/20','9210','9290','9150','9160','64069'";
+
+        // TODO: MUCH better data validation
+        var csv = $.csv.toArrays(csvString, {'delimiter' : '\''}); 
+        
         var l = csv.length;
-        var tick =[];
+        var ticks =[];
         var vol = [];
         var avg = [];
         var candle = 50;
-        var r = parseInt(Math.random()*(l-candle));
+        //var r = parseInt(Math.random()*(l-candle));
 
-        var label = csv[r][0];
-        var month = label.split('/')[1];
-        for(var i=r; i< r+candle ; i++) {
-          label = csv[i][0];
-          var m = label.split('/')[1];
-          var v = csv[i][5] || 0;
+        var candleDate = csv[0][0];
+        var prvMonth = candleDate.split('/')[1];
+        //for(var i = r; i < r + candle ; i++) {
+        for(var i=0; i<l; i++) {
+          var candle = csv[i];
+          candleDate = candle[0];
+          var curMonth = candleDate.split('/')[1];
+          var volume = candle[5] || 0;
+         
+          // calculate the moving average 
+          var total = 0;
+          var numDays = 5; /* sample size, number of previous days considered */
+          for (var j = 0 ; j < numDays && i-j > 0 ; j++) {
+            total += parseInt(csv[i-j][4]);
+          }
+          avg.push(total / numDays);
           
-          // 5日単純移動平均　手抜きぎみ
-          var a = 0;
-          for (var j=0 ; j < 5 && i-j >0; j++) {
-            a += parseInt(csv[i-j][4]);
+          if( curMonth != prvMonth ) {
+            ticks.push([candle[1],candle[4],candle[2],candle[3],candle[0]]);
+            prvMonth = curMonth;
+          } else {
+            ticks.push([candle[1],candle[4],candle[2],candle[3]]);
           }
-          avg.push( a/j );
-          
-          if( m != month ) {
-            tick.push([csv[i][1],csv[i][4],csv[i][2],csv[i][3],csv[i][0]]);
-            month = m;
-          }
-          else {
-            tick.push([csv[i][1],csv[i][4],csv[i][2],csv[i][3]]);
-          }
-          vol.push(v);
+          vol.push(volume);
         }
       
-        $("#cv01").candleChart(tick,option)
+        $("#cv01").candleChart(ticks, option)
           .ccVolume(vol)
-          .ccMA(avg,"#FFFFFF");
+          .ccMA(avg, "#FFFFFF");
 
         $("#cv02").candleChart(option2)
-          .ccVolume(vol).ccTick(tick);
+          .ccVolume(vol)
+          .ccTick(ticks);
 
-      })
-    });
+      //})
 	</script>
-</head>
-
-<body>
-<div id="page">
-<header>
-	<h1 id="siteName">Demo - jQuery plugin : Candlestick Chart</h1>
-</header>
-
-<div id="contents">
-<section id="main">
-<article>
-<h1>jqCandlechartのデモ</h1>
-<p style="text-align:right;font-size:80%;"><a href="index.html">戻る</a></p>
-<p>日経225先物の2007年〜2010年9月末までのデータ(CSV形式)を読み込んで、ローソク足と出来高、5日移動平均線をランダムな期間で50本表示します。</p>
-<div class="stage">
-<canvas width="400" height="300" id="cv01"></canvas>
-</div>
-<p>※Google Chromeの場合、デフォルトではセキュリティ上の問題でローカルのファイルにアクセス出来ないため、ローカル環境では動きません。<br>
-Chromeの起動オプションに「–allow-file-access-from-files」を追加することで動作します。
-</p>
-
-<div class="stage">
-<canvas width="400" height="300" id="cv02"></canvas>
-</div>
-
-</article>
-</section>
-<aside></aside>
-</div>
-
-<footer>
-	<p class="copyright">Copyright &copy; Shunsuke Ito All Rights Reserved.</p>
-</footer>
-</div>
-</body>
-</html>
+<!--EOF-->
