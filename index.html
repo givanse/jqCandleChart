@@ -1,129 +1,141 @@
 <!doctype html>
-<html lang="ja">
+<html>
 <head>
 	<meta charset="UTF-8">
 	<title>jQuery plugin : Candlestick Chart</title>
-	<link href="simple.css" rel="stylesheet" type="text/css" media="screen">
+	<link href="css/simple.css" rel="stylesheet" type="text/css" media="screen">
 </head>
 
 <body>
-<div id="page">
-<header>
-	<h1 id="siteName">jQuery plugin : Candlestick Chart var 0.1.3</h1>
-</header>
+  <div id="page">
+  <header>
+	  <h1 id="siteName">jQuery plugin : Candlestick Chart</h1>
+  </header>
 
-<div id="contents">
-<section id="main">
-<article>
-<h1>jqCandlechart.jsとは</h1>
-<p>jqCandlechart.jsは&lt;canvas&gt;にローソク足チャートを表示するjQueryプラグインです。<br>
-Moving average line and the volume is viewable in the simple methods。<br>
-<p>Demo: <a href="demo.html">jqCandlechart.js</a></p>
-<p>Sample image:<br><img src="image.jpg" alt="Sample image"></p>
+  <div id="contents">
+    <section id="main">
+    <article>
+      <h1>jqCandlechart.js</h1>
+      <p>jqCandlechart.js The&lt;canvas&gt;It is a jQuery plug-in to display the candlestick chart<br>
+      Moving average line and the volume is viewable in the simple methods
+      <br></p>
+      <p>Demo: <a href="demo.html">jqCandlechart.js</a></p>
 
-<h1>How to use</h1>
-<h2>1) Preparation of HTML and read the plug-in</h2>
-<p class="code">
-&lt;script src=&quot;jquery.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;<br>
-&lt;script src=&quot;jquery.candlechart.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-</p>
+      <h1>How to use</h1>
+      <h2>1) Preparation of HTML and read the plug-in</h2>
+      <p class="code">
+        &lt;script src=&quot;jquery.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;<br>
+        &lt;script src=&quot;jquery.candlechart.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+      </p>
 
-<p>In addition, I will prepare to HTML on the canvas for drawing。</p>
-<p class="code">
-&lt;canvas width=&quot;400&quot; height=&quot;300&quot; id=&quot;cv01&quot;&gt;&lt;/canvas&gt;
-</p>
+      <p>In addition, I will prepare to HTML on the canvas for drawing。</p>
+      <p class="code">
+      &lt;canvas width=&quot;400&quot; height=&quot;300&quot; id=&quot;cv01&quot;&gt;&lt;/canvas&gt;
+      </p>
 
-<h2>2) Preparation of data</h2>
-<p>The drawing of Candlestick, data of four open, close, high, lows are required. I will prepare a two-dimensional array this
-In this case, if you set a string to a fifth of the array, and string vertical border appears as a label。</p>
-<p class="code">
-var tick = [<br>
-&nbsp;[200,250,260,190],<br>
-&nbsp;[250,280,280,190,"4月1日"],<br>
-&nbsp;[280,210,280,180]<br>
-];
-</p>
+      <h2>2) Preparation of data</h2>
+      <p>The drawing of Candlestick, data of four open, close, high, lows are required. I will prepare a two-dimensional array this
+      In this case, if you set a string to a fifth of the array, and string vertical border appears as a label。</p>
+      <p class="code">
+        var tick = [<br>
+        &nbsp;[200,250,260,190],<br>
+        &nbsp;[250,280,280,190,"4Month1Day"],<br>
+        &nbsp;[280,210,280,180]<br>
+        ];
+      </p>
 
-<p>Prepare an array and moving average trading volume as well。</p>
-<p class="code">
-var vol = [1000,1200,1100];<br>
-var avg = [240,260,270];
-</p>
+      <p>Prepare an array and moving average trading volume as well。</p>
+      <p class="code">
+        var vol = [1000,1200,1100];<br>
+        var avg = [240,260,270];
+      </p>
 
-<h2>3) Drawing</h2>
-<p>正常に読み込まれていれば、jQueryのプラグインとしてメソッドが利用可能となっていますので、以下のようにメソッドにデータを渡すことで、チャートが描画されます。<br>
-メソッドチェーンで出来高や移動平均を追加表示できます。</p>
-<p class="code">
-$("#cv01").candleChart(tick) 　<span>// ローソク足の初期設定と描画</span><br>
-.ccVolume(vol)　<span>// 出来高の描画</span><br>
-.ccMA(avg,"#FFFFFF");　<span>// 移動平均線の描画</span>
-</p>
+      <h2>3) Drawing</h2>
+      <p>
+      As long is loaded successfully, the method because it is available as a plug-in for jQuery, 
+      by passing the data to the method as follows: chart is drawn. <br>
+      I can add display a moving average and trading volume in the method chain.
+      </p>
+      <p class="code">
+        $("#cv01").candleChart(tick) 　<span>// Drawing the initial setting of Candlestick</span><br>
+        .ccVolume(vol)　<span>// Drawing of volume</span><br>
+        .ccMA(avg,"#FFFFFF");　<span>// Drawing of the moving average line</span>
+      </p>
 
-<table class="simple">
-<thead>
-<tr><th>メソッド</th><th>説明</th></tr>
-</thead>
-<tbody>
-<tr><th>.candleChart(data,options)</th>
-<td>チャート描画の基本メソッドです。<br>
-データとオプションを引数として与えると、オプションに沿ったローソク足を描画します。<br>引数にはオプションのみ、データのみを与えることも可能です。</td>
-</tr>
-<tr><th>.ccTick(data)</th>
-<td>ローソク足を描画します<br>画面クリアしませんのですでにローソクや移動平均線があった場合、単純に上書きします。</td>
-</tr>
-<tr><th>.ccVolume(vol)</th>
-<td>出来高を描画します。<br>引数の配列中最大値から自動で個々の高さを調整します。</td></tr>
-<tr><th>.ccMA(avg,color)</th>
-<td>移動平均線を描画します。スプライン補間で値の補間を行います。データ次第で移動平均以外のまったく別の値を表示することも可能です。</td></tr>
-<tr><th>.ccClear()</th>
-<td>ローソクチャートを初期化します。<br>設定色で塗りつぶして基本罫線を引き直します。</td></tr>
-<tr><th>.ccStatus()</th>
-<td>チャートに設定されている値を取得します。<br>※メソッドチェーンが繋がらなくなります。</td></tr>
-</tbody>
-</table>
+    <table class="simple">
+    <thead>
+    <tr><th> description </th> <th> method </ th> </ tr>
+    </thead>
+    <tbody>
+      <tr><th>.candleChart(data,options)</th>
+      This is the basic method of <td> chart drawing. <br>
+      If you give as arguments and options data to draw the candlestick in line with the option
+      It is also possible only option, to provide data only to <br> argument. </ td>
+      </tr>
+      <tr><th>.ccTick(data)</th>
+      If there is a moving average line and Candle already, you can simply overwrite it does not 
+      <br> clear screen and draw the <td> Candlestick. </ td>
+      </tr>
+      <tr><th>.ccVolume(vol)</th>
+      I will draw the 
+      <td> volume. I will adjust the height of the individual automatically from the maximum value sequence of 
+      <br> argument. </ td> </ tr>
+      <tr><th>.ccMA(avg,color)</th>
+      I will draw the <td> moving average line. Performs interpolation of values in the spline interpolation. 
+      It is also possible to display a different value of the moving average non-data up to you. </ td> </ tr>
+      <tr><th>.ccClear()</th>
+      I initialize the <td> Candle chart. Re-draw a basic rule by filling in <br> setting color. </ td> </ tr>
+      <tr><th>.ccStatus()</th>
+      I get the value that is set to <td> chart. <br>chain method will not lead. </ td> </ tr>
+    </tbody>
+    </table>
 
-<h2>4) Option</h2>
-<p>チャートの背景色やローソクの太さなど、オプション指定することで多様なチャートを描画可能です。<br>
-オプションは以下のようにオブジェクト形式で複数設定が可能です。</p>
-<p class="code">
-$("#cv01").candleChart(tick,{<br>
-&nbsp;'width' : 600,<br>
-&nbsp;'bgColor': "#2F4F4F",<br>
-&nbsp;'cdLineColor': "#FFF",<br>
-&nbsp;&nbsp;・・・<br>
-});
-</p>
+    <h2>4) Option</h2>
+    It is possible to draw a variety of chart that the thickness of the Candle and background color of 
+    <p> chart, such as the option specified. <br>
+      Option can be more than one set at the object format as follows. </ p>
+    <p class="code">
+      $("#cv01").candleChart(tick,{<br>
+        &nbsp;'width' : 600,<br>
+        &nbsp;'bgColor': "#2F4F4F",<br>
+        &nbsp;'cdLineColor': "#FFF",<br>
+        &nbsp;&nbsp;・・・<br>
+      });
+    </p>
 
-<table class="simple">
-<thead>
-<tr><th>オプション</th><th>デフォルト値</th><th>説明</th></tr>
-</thead>
-<tbody>
-<tr><th>width</th><td>400</td><td>チャートを表示するcanvasの幅</td></tr>
-<tr><th> height </th><td>300</td><td>チャートを表示するcanvasの高さ</td></tr>
-<tr><th> ofX </th><td>50</td><td>canvasとチャートの間の左右余白</td></tr>
-<tr><th> ofY </th><td>30</td><td>canvasとチャートの間の上下余白</td></tr>
-<tr><th> bgColor </th><td>#FFF</td><td>背景色</td></tr>
-<tr><th> cdWidth </th><td>5</td><td>ローソクの太さ</td></tr>
-<tr><th> cdLineColor </th><td>#000</td><td>ローソクの芯と線の色</td></tr>
-<tr><th> cdUpColor </th><td>#FFF</td><td>上昇時のローソクの色</td></tr>
-<tr><th> cdDownColor </th><td>#000</td><td>下降時のローソクの色</td></tr>
-<tr><th> voColor </th><td>#CCC</td><td>出来高の色</td></tr>
-<tr><th> liColor </th><td>#CCC</td><td>罫線の色</td></tr>
-<tr><th> maColor </th><td>#00F</td><td>移動平均線の色</td></tr>
-<tr><th> liNum </th><td>5</td><td>縦罫線の数</td></tr>
-<tr><th> upper </th><td>250</td><td>チャートの上限値</td></tr>
-<tr><th> lower </th><td>100</td><td>チャートの下限値</td></tr>
-<tr><th> autoScale </th><td>false</td><td>チャート上限値と下限値を自動計算するかどうか。</td></tr>
-</tbody>
-</table>
+    <table class="simple">
+    <thead>
+    <tr><th>Option</th><th>Default value</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+    <tr><th>width</th><td>400</td><td>The width of the canvas to display the chart</td></tr>
+    <tr><th> height </th><td>300</td><td>The height of the canvas to display the chart</td></tr>
+    <tr><th> ofX </th><td>50</td><td>canvas Left and right margin between the chart and</td></tr>
+    <tr><th> ofY </th><td>30</td><td>canvas Top and bottom margin between the chart and</td></tr>
+    <tr><th> bgColor </th><td>#FFF</td><td>Background color</td></tr>
+    <tr><th> cdWidth </th><td>5</td><td>The thickness of the Candle</td></tr>
+    <tr><th> cdLineColor </th><td>#000</td><td>Color and line core of Candle</td></tr>
+    <tr><th> cdUpColor </th><td>#FFF</td><td>Color of candle rising</td></tr>
+    <tr><th> cdDownColor </th><td>#000</td><td>Color of candle falling</td></tr>
+    <tr><th> voColor </th><td>#CCC</td><td>Color high-come</td></tr>
+    <tr><th> liColor </th><td>#CCC</td><td>Border color</td></tr>
+    <tr><th> maColor </th><td>#00F</td><td>Color of the moving average line</td></tr>
+    <tr><th> liNum </th><td>5</td><td>Number of vertical border</td></tr>
+    <tr><th> upper </th><td>250</td><td>Upper limit of the chart</td></tr>
+    <tr><th> lower </th><td>100</td><td>Lower limit of the chart</td></tr>
+    <tr><th> autoScale </th><td>false</td><td>Whether to automatically calculate the lower limit and upper limit chart</td></tr>
+    </tbody>
+    </table>
 
-<p>If you want to automatically calculate the upper and lower limit of the chart, the number of horizontal rule will also be automatically calculated, it is no longer a good number of cut。
-Because I think that there also be aligned or the upper and lower limit in more than one chart, and it is set not to automatically calculated by default。</p>
+    <p>If you want to automatically calculate the upper and lower limit of the 
+       chart, the number of horizontal rule will also be automatically calculated, it is no longer a good number of cut
+       Because I think that there also be aligned or the upper and lower limit 
+       in more than one chart, and it is set not to automatically calculated by default
+    </p>
 
-  </article>
-  </section>
-  <aside></aside>
+    </article>
+    </section>
+    <aside></aside>
   </div>
 
   <footer></footer>
