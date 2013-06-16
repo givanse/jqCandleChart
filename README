@@ -14,9 +14,15 @@
 
 Dependencies:
   - JQuery
-    js/jquery.js is a symbolic link that must point to your library
-    jquery.com
+      js/jquery.js
+      a symbolic link that must point to jquery: 
+        jquery.com
   - JQuery-CSV 
-    js/jquery.csv.js is a symbolic link that must point to your library
-    code.google.com/p/jquery-csv
-
+      js/jquery.csv.js
+      a symbolic link that must point to jquery-csv: 
+        code.google.com/p/jquery-csv
+  - QUnit
+      test/qunit/qunit.js
+      test/qunit/qunit.css
+      symbolic links that must point to qunit:
+        qunitjs.com

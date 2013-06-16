@@ -4,3 +4,5 @@
 .gitignore
 js/jquery-2.0.2.js
 js/jquery.csv-0.71.js
+test/qunit/qunit-1.11.0.css
+test/qunit/qunit-1.11.0.js
